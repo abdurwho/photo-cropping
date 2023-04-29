@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Photo Cropping App</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.css"
+    />
+    <style type="text/css">
+      @font-face {
+        font-family: "Billabong";
+        src: url("billabong.ttf");
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        display: flex; 
+        flex-direction: column;
+        min-height: 100vh; 
+        justify-content: center; 
+        align-items: center; 
+        padding-bottom: 25px;
+      }
+
+      input[type="file"] {
+        display: none;
+      }
+
+      .file-upload {
+        position: relative;
+        display: inline-block;
+      }
+
+      .file-upload input[type="file"] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+      }
+
+      .file-upload-btn {
+        padding: 8px 20px;
+        border: none;
+        border-radius: 4px;
+        background: #3897f0;
+        color: #fff;
+        transition: all 0.2s ease-in-out;
+        margin-right: 10px;
+        cursor: pointer;
+      }
+
+      .file-upload-btn:hover {
+        background: #1e528e;
+      }
+
+      .container {
+        display: flex; 
+        flex-direction: column; 
+        justify-content: center; 
+        align-items: center; 
+        background-color: #f1f1f1;
+        padding: 20px; 
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); 
+        max-width: 500px; 
+      }
+
+      #image-container {
+        width: 500px;
+        height: 500px;
+        border: 1px solid black;
+        margin-bottom: 20px;
+        overflow: hidden;
+      }
+
+      button {
+        border-radius: 20px;
+        border: 1px solid #3897f0;
+        background-color: #fff;
+        color: #3897f0;
+        padding: 8px 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+      }
+
+      button:hover {
+        background-color: #3897f0;
+        color: #fff;
+      }
+
+      .save-button {
+        border-color: #3cba54;
+        color: #3cba54;
+      }
+
+
+      .save-button:hover {
+        background-color: #3cba54;
+        color: #fff;
+      }
+
+      #result-image {
+        max-width: 500px;
+        margin-bottom: 17px;
+      }
+    </style>
+  </head>
+  <body>
+
+    <h1>Photo Cropping App</h1>
+
+    <div class="file-upload">
+      <label for="image-input" class="file-upload-btn btn">Choose File</label>
+      <input id="image-input" type="file" />
+    </div>
+    <br />
+    <div id="image-container"></div>
+    <button id="crop-button">Crop</button>
+
+    <h2>Cropped Image Preview</h2>
+    <img id="result-image" src="" style="display: none" />
+
+    <button id="save-button">Save</button>
+
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.js"
+    ></script>
+    <script type="text/javascript">
+      const image = document.getElementById("image-input");
+      const container = document.getElementById("image-container");
+      const cropButton = document.getElementById("crop-button");
+      const saveButton = document.getElementById("save-button");
+      const resultImage = document.getElementById("result-image");
+
+      let cropper;
+
+      image.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = () => {
+          const img = document.createElement("img");
+          img.src = reader.result;
+          container.appendChild(img);
+          cropper = new Cropper(img);
+        };
+        reader.readAsDataURL(file);
+      });
+
+      cropButton.addEventListener("click", () => {
+        const croppedImage = cropper.getCroppedCanvas().toDataURL();
+        resultImage.src = croppedImage;
+        resultImage.style.display = "block";
+      });
+
+      saveButton.addEventListener("click", () => {
+        const link = document.createElement("a");
+        link.download = "cropped-image.png";
+        link.href = resultImage.src;
+        link.click();
+      });
+    </script>
+  </body>
+</html>
